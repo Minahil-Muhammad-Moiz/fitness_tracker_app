@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.badge.BadgeDrawable
 
 class NotificationFragment : Fragment() {
 
@@ -33,5 +35,29 @@ class NotificationFragment : Fragment() {
         )
 
         listView.adapter = NotificationAdapter(requireContext(), notifications)
+
+        // NEW: Clear the badge when user views notifications
+        clearBadge()
+    }
+
+    // NEW: Clear the badge when notifications are viewed
+    private fun clearBadge() {
+        try {
+            val bottomNavigation: BottomNavigationView? = activity?.findViewById(R.id.bottomNavigation)
+            bottomNavigation?.let {
+                val badge = it.getBadge(R.id.nav_notifications)
+                badge?.isVisible = false
+                badge?.clearNumber()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    // Optional: Mark notifications as read when viewed
+    override fun onResume() {
+        super.onResume()
+        // Clear badge when returning to this fragment
+        clearBadge()
     }
 }

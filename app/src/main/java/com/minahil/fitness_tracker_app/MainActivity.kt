@@ -8,6 +8,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.badge.BadgeDrawable
 
 class MainActivity : AppCompatActivity() {
     private lateinit var session: SessionManager
@@ -44,13 +45,16 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnItemSelectedListener { item ->
             val selectedFragment: Fragment = when (item.itemId) {
                 R.id.nav_home -> HomeFragment()
-                R.id.nav_notifications -> NotificationFragment() // Changed to match your file name
+                R.id.nav_notifications -> NotificationFragment()
                 R.id.nav_profile -> ProfileFragment()
                 else -> HomeFragment()
             }
             loadFragment(selectedFragment)
             true
         }
+
+        // 6. Add badge to Alerts tab
+        setupAlertBadge(bottomNavigation)
     }
 
     // Helper utility to replace the FrameLayout container with your active fragment screen
@@ -67,9 +71,42 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToLogin() {
-        val intent = Intent(this, LoginActivity::class.java) // Uses your exact LoginActivity file
+        val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
+    }
+
+    // NEW: Setup badge for Alerts tab
+    private fun setupAlertBadge(bottomNavigation: BottomNavigationView) {
+        try {
+            // Get or create badge for the notifications tab
+            val badge = bottomNavigation.getOrCreateBadge(R.id.nav_notifications)
+
+            // Set badge number (showing number of notifications)
+            badge.number = 6 // This matches the number of notifications in your list
+
+            // Make badge visible
+            badge.isVisible = true
+
+            // Optional: Customize badge appearance
+            // badge.backgroundColor = getColor(R.color.red) // Custom color
+            // badge.badgeTextColor = getColor(R.color.white) // Text color
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    // Optional: Method to update badge count dynamically
+    fun updateAlertBadge(count: Int) {
+        try {
+            val bottomNavigation: BottomNavigationView = findViewById(R.id.bottomNavigation)
+            val badge = bottomNavigation.getOrCreateBadge(R.id.nav_notifications)
+            badge.number = count
+            badge.isVisible = count > 0
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
