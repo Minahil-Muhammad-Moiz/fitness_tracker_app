@@ -13,13 +13,13 @@ class HomeFragment : Fragment() {
 
     private var glassesLogged = 0
     private var workoutMinutes = 28
+    private var sleepHours = 0.0 // New variable for sleep
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate fragment_home.xml as this fragment's view
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -29,13 +29,18 @@ class HomeFragment : Fragment() {
         val greetingText: TextView = view.findViewById(R.id.greetingText)
         val waterValue: TextView = view.findViewById(R.id.waterValue)
         val workoutValue: TextView = view.findViewById(R.id.workoutValue)
+        val sleepValue: TextView = view.findViewById(R.id.sleepValue) // Add this
         val logWaterButton: Button = view.findViewById(R.id.logWaterButton)
         val startWorkoutButton: Button = view.findViewById(R.id.startWorkoutButton)
+        val logSleepButton: Button = view.findViewById(R.id.logSleepButton) // Add this
 
         // Personalize greeting using the logged-in user's name from SessionManager
         val session = SessionManager(requireContext())
         val firstName = session.getUserName().split(" ").firstOrNull() ?: "Athlete"
-        greetingText.text = "Hi, $firstName! \uD83D\uDC4B"
+        greetingText.text = "Hi, $firstName! 👋"
+
+        // Set initial sleep value
+        sleepValue.text = "0.0 hrs"
 
         logWaterButton.setOnClickListener {
             glassesLogged++
@@ -48,6 +53,13 @@ class HomeFragment : Fragment() {
             workoutMinutes += 5
             workoutValue.text = "$workoutMinutes min"
             Toast.makeText(requireContext(), "+5 minutes added to today's workout!", Toast.LENGTH_SHORT).show()
+        }
+
+        // NEW: Log Sleep button click listener
+        logSleepButton.setOnClickListener {
+            sleepHours += 0.5
+            sleepValue.text = String.format("%.1f hrs", sleepHours)
+            Toast.makeText(requireContext(), "+0.5 hours of sleep logged! 😴", Toast.LENGTH_SHORT).show()
         }
     }
 }

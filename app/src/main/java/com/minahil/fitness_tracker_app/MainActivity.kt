@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var session: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
